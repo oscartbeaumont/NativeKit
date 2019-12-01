@@ -1,0 +1,22 @@
+{
+  "name": "nativekit",
+  "version": "0.0.1",
+  "description": "Build Native MacOS App in Javascript",
+  "author": "Oscar Beaumont",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^3.0.0",
+    "fs-extra": "^8.1.0",
+    "parcel-bundler": "^1.12.4",
+    "plist": "^3.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^3.7.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "nativekit": "./index.js"
+  }
+}

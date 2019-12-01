@@ -1,0 +1,17 @@
+{
+  "name": "electronplayer",
+  "version": "3.0.0-alpha",
+  "description": "An Electron Based Web Video Services Player. Supporting Netflix, Youtube, Twitch, Floatplane, Hulu And More",
+  "main": "src/main.js",
+  "author": "Oscar Beaumont",
+  "license": "MIT",
+  "scripts": {
+    "start": "echo \"TODO: Not implemented\" && exit 1",
+    "build": "nativekit build",
+    "test": "echo \"TODO: no tests have been developed\" && exit 1"
+  },
+  "devDependencies": {
+    "cssnano": "^4.1.10",
+    "typescript": "^3.7.2"
+  }
+}
