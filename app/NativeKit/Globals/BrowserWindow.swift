@@ -33,6 +33,7 @@ import WebKit
     var setSize: (@convention(block)(Int, Int) -> Void)? { get }
 //    var setResizable: (@convention(block)(Bool) -> Void)? { get } // https://vgable.com/blog/2008/04/11/nswindow-setresizable/
 //    var setMovable: (@convention(block)(Bool) -> Void)? { get }
+    var setAlwaysOnTop: (@convention(block)(Bool) -> Void)? { get }
     var moveTop: (@convention(block)() -> Void)? { get }
     var center: (@convention(block)() -> Void)? { get }
     var setPosition: (@convention(block)(Int, Int) -> Void)? { get }
@@ -95,7 +96,49 @@ class BrowserWindow: NSObject, BrowserWindowExports {
             self.webView.configuration.preferences.setValue(true, forKey: "developerExtrasEnabled")
         }
         
-        // TODO: Set Default Menu Layout
+        // Set Default Menu Layout
+        let appName = Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String ?? ""
+        let menu = NSMenu()
+        let appNameMenu = NSMenu(title: appName)
+        appNameMenu.addItem(withTitle: "About " + appName, action: #selector(NSApplication.shared.orderFrontStandardAboutPanel(_:)), keyEquivalent: "")
+        appNameMenu.addItem(NSMenuItem.separator())
+        appNameMenu.addItem(withTitle: "Hide " + appName, action: #selector(NSApplication.shared.hide(_:)), keyEquivalent: "h")
+        appNameMenu.addItem(withTitle: "Hide Others", action: #selector(NSApplication.shared.hideOtherApplications(_:)), keyEquivalent: "H")
+        appNameMenu.addItem(withTitle: "Show All", action: #selector(NSApplication.shared.unhideAllApplications(_:)), keyEquivalent: "") // TODO: Not working
+        appNameMenu.addItem(NSMenuItem.separator())
+        appNameMenu.addItem(NSMenuItem(title: "Quit " + appName, action: #selector(NSApplication.shared.terminate(_:)), keyEquivalent: "q"))
+        menu.setSubmenu(appNameMenu, for:menu.addItem(withTitle: appNameMenu.title, action: nil, keyEquivalent: ""))
+        
+        let editMenu = NSMenu(title: "Edit")
+//        editMenu.addItem(withTitle: "Undo", action: #selector(NSApplication.shared.undo(_:)), keyEquivalent: "z")
+//        editMenu.addItem(withTitle: "Redo", action: #selector(NSApplication.shared.orderFrontStandardAboutPanel(_:)), keyEquivalent: "Z")
+//        editMenu.addItem(withTitle: "Redo", action: #selector(NSMenuItem.copy(_:)), keyEquivalent: "Z")
+//        editMenu.addItem(NSMenuItem.copy() as! NSMenuItem) // action: #selector(NSPasteboard.cut), keyEquivalent: "x"
+//        editMenu.addItem(withTitle: "Paste", action: #selector(NSApplication.shared.hide(_:)), keyEquivalent: "c")
+//        editMenu.addItem(withTitle: "Copy", action: #selector(NSApplication.shared.hide(_:)), keyEquivalent: "v")
+//        editMenu.addItem(withTitle: "Paste and Match Style", action: #selector(NSApplication.shared.hide(_:)), keyEquivalent: "V") // TODO
+//        editMenu.addItem(withTitle: "Select All", action: #selector(NSApplication.shared.hide(_:)), keyEquivalent: "a")
+//        appNameMenu.addItem(NSMenuItem.separator())
+//        // TODO: Emoji and Symbols menu
+        menu.setSubmenu(editMenu, for:menu.addItem(withTitle: editMenu.title, action: nil, keyEquivalent: ""))
+        
+        // Find
+        
+        
+        
+        
+        let viewMenu = NSMenu(title: "View")
+        viewMenu.addItem(withTitle: "Enter Full Screen ", action: #selector(self.mainWindow.toggleFullScreen(_:)), keyEquivalent: "f")
+        menu.setSubmenu(viewMenu, for:menu.addItem(withTitle: viewMenu.title, action: nil, keyEquivalent: ""))
+        
+        // TODO: Finish and Test Default Menubar
+        
+        NSApp.mainMenu = menu
+        
+        // TODO: Overridable
+//        self.mainWindow.toggleFullScreen(nil)
+//        print(self.mainWindow.styleMask.contains(.fullScreen))
+//        let search = NSKeyCommand(input: "", modifierFlags: .command, action: #selector(findFriends), discoverabilityTitle: "Find Friends")
         
         // Show the window
         self.mainWindow.makeKeyAndOrderFront(nil) // TODO: Option to be defered and done in JS
@@ -150,13 +193,23 @@ class BrowserWindow: NSObject, BrowserWindowExports {
     }
     
     var setSize: (@convention(block)(Int, Int) -> Void)? {
-        return { [unowned self] (height, width) in
+        return { [unowned self] (width, height) in
             var frame = self.mainWindow.frame
             frame.origin.y = frame.origin.y + CGFloat(height)
             frame.origin.x = frame.origin.x + CGFloat(width)
             frame.size.height = CGFloat(height)
             frame.size.width = CGFloat(width)
             self.mainWindow.setFrame(frame, display: true)
+        }
+    }
+    
+    var setAlwaysOnTop: (@convention(block)(Bool) -> Void)? {
+        return { [unowned self] (enabled) in
+            if(enabled) {
+                self.mainWindow.level = .floating
+            } else {
+                self.mainWindow.level = .normal
+            }
         }
     }
     

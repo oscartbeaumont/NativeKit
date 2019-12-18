@@ -12,6 +12,9 @@
   },
   "devDependencies": {
     "cssnano": "^4.1.10",
-    "typescript": "^3.7.2"
+    "typescript": "^3.7.3"
+  },
+  "dependencies": {
+    "nativekit": "file:../.."
   }
 }

@@ -3,7 +3,7 @@ const fs = require('fs-extra');
 const Bundler = require('parcel-bundler');
 const plist = require('plist');
 
-module.exports = async projectDir => {
+module.exports = async (projectDir: String) => {
   // TODO: Remove hardcoded values
   const nativeKitSource = path.join(__dirname, './NativeKit.app/Contents');
   const config = {
@@ -76,7 +76,9 @@ module.exports = async projectDir => {
     NSSupportsSuddenTermination: true,
     NSAppTransportSecurity: {
       NSAllowsArbitraryLoads: true
-    }
+    },
+    'com.apple.security.app-sandbox': true
+    // ''
 
     //   CFBundleSupportedPlatforms: ['MacOSX'],
     //   BuildMachineOSBuild: '18G1012',
@@ -94,5 +96,8 @@ module.exports = async projectDir => {
     infoPlist
   );
 
-  // TODO: Code Sign, Entitlements??? (Does the app remain sandboxed?)
+  // TODO:
+  // codesign --sign "{CERTNAME}" ./ElectronPlayer.app --force
+
+  // TODO: Code Sign, Entitlements??? (Does the app remain in sandbox?)
 };

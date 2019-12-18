@@ -14,7 +14,7 @@ var nativeKit = {
     app: {
         _eventHandlers: {},
         _eventCalled: (event, data) => {
-            window.nativeKit.app._eventHandlers[event].forEach(handler => handler(data));
+            (window.nativeKit.app._eventHandlers[event] || []).forEach(handler => handler(data));
         },
         on: (event, handler) => {
             if(window.nativeKit.app._eventHandlers[event] === undefined) {
@@ -30,7 +30,7 @@ var nativeKit = {
     win: {
         _eventHandlers: {},
         _eventCalled: (event, data) => {
-            window.nativeKit.win._eventHandlers[event].forEach(handler => handler(data));
+            (window.nativeKit.win._eventHandlers[event] || []).forEach(handler => handler(data));
         },
         on: (event, handler) => {
             if(window.nativeKit.win._eventHandlers[event] === undefined) {
@@ -42,12 +42,33 @@ var nativeKit = {
         emit: (event, info) => {
             window.webkit.messageHandlers._wkwebviewEventEmitterEmitWin.postMessage([event, info]);
         }
-    },
-    
+    }
 };
 
-Element.prototype.requestFullscreen = () => window.webkit.messageHandlers._wkwebviewRequest.postMessage("fullscreen");
-Element.prototype.exitFullscreen = () => window.webkit.messageHandlers._wkwebviewRequest.postMessage("exit-fullscreen");
+document.fullscreenEnabled = true;
+Element.prototype.requestFullscreen = () => new Promise((resolve, reject) => {
+    window.webkit.messageHandlers._wkwebviewRequest.postMessage("fullscreen");
+    document.fullscreenElement = this
+    if(typeof document.onfullscreenchange == 'function') {
+        document.onfullscreenchange()
+    }
+    if(typeof this.onfullscreenchange == 'function') {
+        this.onfullscreenchange()
+    }
+
+    resolve();
+});
+Element.prototype.exitFullscreen = () => new Promise((resolve, reject) => { // TODO: Call this when closing fullscreen through menu buttons
+    window.webkit.messageHandlers._wkwebviewRequest.postMessage("exit-fullscreen");
+    if(typeof document.fullscreenElement.onfullscreenchange == 'function') {
+        document.fullscreenElement.onfullscreenchange()
+    }
+    document.fullscreenElement = undefined
+    if(typeof document.onfullscreenchange == 'function') {
+        document.onfullscreenchange()
+    }
+    resolve();
+});
 """
 
 class WKContentController: NSObject, WKScriptMessageHandler {
@@ -65,7 +86,6 @@ class WKContentController: NSObject, WKScriptMessageHandler {
                     let infoStr = info as? String ?? "undefined" // TODO: Support Objects, Arrays, etc
                     webView.evaluateJavaScript("window.nativeKit.app._eventCalled(`" + eventName + "`, `" + infoStr + "`)", completionHandler: nil)
                 }
-                
             });
         } else if(message.name == "_wkwebviewEventEmitterEmitApp") {
             let args = message.body as? NSArray ?? []
@@ -84,7 +104,6 @@ class WKContentController: NSObject, WKScriptMessageHandler {
                     let infoStr = info as? String ?? "undefined" // TODO: Support Objects, Arrays, etc
                     webView.evaluateJavaScript("window.nativeKit.win._eventCalled(`" + eventName + "`, `" + infoStr + "`)", completionHandler: nil)
                 }
-                
             });
         } else if(message.name == "_wkwebviewEventEmitterEmitWin") {
             let args = message.body as? NSArray ?? []
@@ -97,18 +116,24 @@ class WKContentController: NSObject, WKScriptMessageHandler {
             let action = message.body as? String ?? ""
             if(action == "fullscreen") {
                 if let window = self.mainWindow {
-                    window.toggleFullScreen(self) // TODO: only enter fullscreen
+                    if(window.styleMask.contains(.fullScreen) == false) {
+                        window.toggleFullScreen(self)
+                    }
                 }
             } else if(action == "exit-fullscreen") {
                 if let window = self.mainWindow {
-                    window.toggleFullScreen(self) // TODO: only exit fullscreen
+                    if(window.styleMask.contains(.fullScreen) == true) {
+                        window.toggleFullScreen(self)
+                    }
                 }
             }
         }
     }
 }
 
+// TODO: Maybe merge into main web view class
 class WKWebViewDelegate: NSObject, WKNavigationDelegate {
+    var webView: WKWebViewExtended? = nil
     // TODO: Show loader in UI to user while webpage is loading. Possibly customisable
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
@@ -121,6 +146,20 @@ class WKWebViewDelegate: NSObject, WKNavigationDelegate {
 
     func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
 //        print("finish to load")
+    }
+    
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        print("WebView Error:", error)
+        if let webView = self.webView {
+            webView.loadHTMLString("<h1>Error</h1>", baseURL: nil)
+        }
+    }
+    
+    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        print("WebView Navigation Error:", error)
+        if let webView = self.webView {
+            webView.loadHTMLString("<h3>Error: " + error.localizedDescription + "</h3>", baseURL: nil) // TODO: Go Back + Home Option, Better Styling
+        }
     }
 
     private func webView(webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: NSError) {
@@ -148,6 +187,7 @@ class WKWebViewExtended: WKWebView {
         // Parse the frame and config through to the WKWebView
         super.init(frame: frame, configuration: configuration)
         contentController.webView = self
+        delegate.webView = self
         
         // Expose broswer events through
         self.navigationDelegate = delegate

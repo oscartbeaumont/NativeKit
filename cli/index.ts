@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-const path = require('path'),
-  chalk = require('chalk');
+import fs from 'fs';
+import path from 'path';
+import chalk from 'chalk';
 
 (async () => {
   // Remove node + ssgjs binaries from arguments
@@ -15,10 +16,16 @@ const path = require('path'),
 
   // Handle version flag
   if (args.includes('--version') || args.includes('-v')) {
-    var packageJson = require(path.join(__dirname, './package.json'));
-    console.log('NativeKit CLI version ' + packageJson.version);
+    var nkPackageJson = require(path.join(__dirname, './package.json'));
+    console.log('NativeKit CLI version ' + nkPackageJson.version);
     process.exit(0);
   }
+
+  // Get Config // TODO: Handle missing file
+  let packageJson = JSON.parse(
+    fs.readFileSync(path.resolve('./package.json'), 'utf8')
+  );
+  // console.log(packageJson);
 
   // Handle build command
   if (args.length > 0 && args[0] == 'build') {

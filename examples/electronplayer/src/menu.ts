@@ -1,4 +1,6 @@
-export default (mainWindow) => [
+import { MenuTemplate, MenuItem } from 'nativekit';
+
+export default (mainWindow: BrowserWindow): MenuTemplate => [
     {
         label: 'ElectronPlayer',
         submenu: [
@@ -23,7 +25,7 @@ export default (mainWindow) => [
                 click: () => app.quit()
             }
         ]
-    }
+    },
     {
         label: 'Services',
         submenu: [
@@ -31,6 +33,20 @@ export default (mainWindow) => [
                 label: 'Home',
                 accelerator: 'Cmd+~',
                 click: () => mainWindow.loadFile("interface/index.html")
+            },
+        ]
+    },
+    {
+        label: 'Options',
+        submenu: [
+            {
+                label: 'Always on Top',
+                accelerator: 'Cmd+T',
+                type: 'checkbox',
+                checked: false,
+                click: (menuItem: MenuItem) => {
+                    mainWindow.setAlwaysOnTop(menuItem.state)
+                }
             },
         ]
     }

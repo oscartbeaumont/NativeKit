@@ -1,11 +1,10 @@
 import menuGenerator from './menu';
 import services from './services';
 
-var mainWindow;
+var mainWindow: (BrowserWindow | null);
 
 // TODO:
-// - Typescript types working
-// - Esc to close fullscreen or green maximised
+// - Esc to close fullscreen or green maximised -> Built into NativeKit
 // - NativeKit default handlers (Hide, Quit, Copy, Paste, Cmd+A)
 // - Picture in picture support -> Inject Pipifier extention maybe
 // - Frameless window, etc
@@ -28,12 +27,14 @@ function createWindow() {
 
   // Open menu interface and send services to display
   mainWindow.loadFile("interface/index.html");
-  mainWindow.on('ready', () => mainWindow.emit("services", JSON.stringify(services()).toString()));
+  mainWindow.on('ready', () => {
+    if (mainWindow !== null) mainWindow.emit("services", JSON.stringify(services()).toString())
+  });
 
   // Handle window change event
-  mainWindow.on('open-url', url => {
+  mainWindow.on('open-url', (url: String) => {
     console.log("Changing to url", url)
-    mainWindow.loadURL(url);
+    if (mainWindow !== null) mainWindow.loadURL(url);
   });
 
   mainWindow.on('closed', () => mainWindow = null)
@@ -41,7 +42,7 @@ function createWindow() {
 
 app.on('ready', createWindow);
 
-app.on('window-all-closed', function () {
+app.on('window-all-closed', () => {
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== 'darwin') app.quit()

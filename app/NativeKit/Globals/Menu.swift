@@ -39,6 +39,23 @@ class NSMenuItemActionClosure: NSMenuItem {
     }
 }
 
+@objc protocol menuItemInformationExports: JSExport {
+    var state: Bool { get }
+}
+
+// Contains the menuItem's details for the click callback
+class menuItemInformation: NSObject, menuItemInformationExports {
+    let state: Bool
+    
+    init(_ menuItem: NSMenuItem) {
+        if(menuItem.state == .on) {
+            self.state = true
+        } else {
+            self.state = false
+        }
+    }
+}
+
 @objc protocol MenuExports: JSExport {
     func buildFromTemplate(_ template: JSValue) -> NSMenu
     func setApplicationMenu(_ menu: NSMenu)
@@ -71,16 +88,19 @@ class Menu: NSObject, MenuExports {
                 
                 
                 // Setup menu item type
-                // TODO: radio + checkbox
-//                if type == "checkbox" { // TODO
-//                    if subitem.forProperty("checked").toBool() {
-//                        menuItem.state = .on
-//                    } else {
-//                        menuItem.state = .off
-//                    }
-//                } else if type == "radio" { // TODO
-//
-//                }
+                if type == "checkbox" {
+                    if subitem.hasProperty("checked") {
+                        if subitem.forProperty("checked").toBool() {
+                            menuItem.state = .on
+                        } else {
+                            menuItem.state = .off
+                        }
+                    } else {
+                        menuItem.state = .off
+                    }
+                } else if type == "radio" {
+                    // TODO
+                }
 
                 // Menu title
                 menuItem.title = subitem.forProperty("label").toString() ?? ""
@@ -88,7 +108,17 @@ class Menu: NSObject, MenuExports {
                 // Add click handler
                 if(subitem.hasProperty("click")) { // TODO: Handle disabled
                     menuItem.actionClosure = {() in
-                        subitem.forProperty("click").call(withArguments: [])
+                        var args: [Any] = []
+                        if type == "checkbox" {
+                            if(menuItem.state == .on) {
+                                menuItem.state = .off
+                            } else {
+                                menuItem.state = .on
+                            }
+                            args.append(menuItemInformation(menuItem))
+                        }
+                        
+                        subitem.forProperty("click").call(withArguments: args)
                     }
                     menuItem.target = menuItem // Enable item
                 }

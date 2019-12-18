@@ -19,6 +19,7 @@
 		48B9AE002378142700F66825 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48B9ADFF2378142700F66825 /* JavaScriptCore.framework */; };
 		48B9AE072378632F00F66825 /* BrowserWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B9AE062378632F00F66825 /* BrowserWindow.swift */; };
 		48B9AE092378682F00F66825 /* Menu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48B9AE082378682F00F66825 /* Menu.swift */; };
+		48BAFD2B23A8C78D00F3F54F /* Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48BAFD2A23A8C78D00F3F54F /* Window.swift */; };
 		48F8D2D3239398B7009467BC /* WKWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48F8D2D2239398B7009467BC /* WKWebView.swift */; };
 		48FA08222391833A00A345C7 /* EventManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48FA08212391833A00A345C7 /* EventManager.swift */; };
 /* End PBXBuildFile section */
@@ -52,6 +53,7 @@
 		48B9AE0123781E3900F66825 /* main.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = main.js; sourceTree = "<group>"; };
 		48B9AE062378632F00F66825 /* BrowserWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserWindow.swift; sourceTree = "<group>"; };
 		48B9AE082378682F00F66825 /* Menu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Menu.swift; sourceTree = "<group>"; };
+		48BAFD2A23A8C78D00F3F54F /* Window.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Window.swift; sourceTree = "<group>"; };
 		48F8D2CA23939620009467BC /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		48F8D2CB239397E3009467BC /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		48F8D2D2239398B7009467BC /* WKWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WKWebView.swift; sourceTree = "<group>"; };
@@ -125,6 +127,7 @@
 			children = (
 				48B9ADFA2378100800F66825 /* main.swift */,
 				48B9ADEA23780AFD00F66825 /* AppDelegate.swift */,
+				48BAFD2A23A8C78D00F3F54F /* Window.swift */,
 				48FA08212391833A00A345C7 /* EventManager.swift */,
 				4882D7DE23927BBF00402865 /* Globals */,
 				48F8D2D123939880009467BC /* WKWebView */,
@@ -233,6 +236,7 @@
 				48B9ADEB23780AFD00F66825 /* AppDelegate.swift in Sources */,
 				484DB671237DEB7C008AB5FC /* Timer.swift in Sources */,
 				48FA08222391833A00A345C7 /* EventManager.swift in Sources */,
+				48BAFD2B23A8C78D00F3F54F /* Window.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -356,10 +360,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = NativeKit/NativeKit.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = Y28Q6BB5VB;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = NativeKit/Info.plist;
@@ -378,10 +382,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = NativeKit/NativeKit.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = Y28Q6BB5VB;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = NativeKit/Info.plist;

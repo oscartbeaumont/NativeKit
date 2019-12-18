@@ -4,6 +4,16 @@
   "description": "Build Native MacOS App in Javascript",
   "author": "Oscar Beaumont",
   "license": "MIT",
+  "main": "./dist/lib/index.js",
+  "types": "./lib/index.d.ts",
+  "bin": {
+    "nativekit": "./dist/cli/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p .",
+    "temp": "tsc --help",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "dependencies": {
     "chalk": "^3.0.0",
     "fs-extra": "^8.1.0",
@@ -11,12 +21,8 @@
     "plist": "^3.0.1"
   },
   "devDependencies": {
+    "@types/node": "^12.12.14",
+    "ts-node": "^8.5.4",
     "typescript": "^3.7.2"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "bin": {
-    "nativekit": "./index.js"
   }
 }
