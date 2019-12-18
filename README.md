@@ -27,12 +27,10 @@ The current usage is quite messy to use. In the future the cli will be published
 ```bash
 git clone https://github.com/oscartbeaumont/NativeKit.git
 cd NativeKit/
-cd cli/
 npm i
 npm run build
-npm link
 # Build NativeKit.app using Xcode (project in the app/ folder) then copy it to this dist/cli/ directory
-cd ../examples/electronplayer/
+cd ./examples/electronplayer/
 npm i
 npm run build
 # ElectronPlayer.app will be in the current dir and can be executed
