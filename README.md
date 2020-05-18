@@ -34,4 +34,5 @@ cd ./examples/electronplayer/
 npm i
 npm run build
 # ElectronPlayer.app will be in the current dir and can be executed
+codesign --force --deep --sign - ./ElectronPlayer.app # This prevents the app being detected as damaged in Catalina
 ```
