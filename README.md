@@ -1,3 +1,5 @@
+#### This project is deprecated. [Electron](https://www.electronjs.org) is probably the best alternative.
+
 # NativeKit
 
 > Build native MacOS apps in Javascript (or Typescript).
