@@ -1,4 +1,4 @@
-#### This project is deprecated. [Electron](https://www.electronjs.org) is probably the best alternative.
+#### This project is deprecated. [Tauri](https://tauri.app/) is probably the best alternative.
 
 # NativeKit
 
